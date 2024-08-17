@@ -11,9 +11,6 @@ const serverURL = process.env.SERVER_URL;
 app.use(express.json());
 app.use(cors());
 
-// Connect to MongoDB
-connect();
-
 // Define routes
 app.get("/", (_, res) => {
   res.send("Hello from the Node.js server within ERPNext with CORS enabled!");
