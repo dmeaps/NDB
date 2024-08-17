@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import connect from "./mongoose.js";
 import dotenv from "dotenv";
 
 dotenv.config();
