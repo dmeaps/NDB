@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 const app = express();
-const port = 3001;
+const port = 3009;
 const serverURL = process.env.SERVER_URL;
 
 // Middleware
@@ -58,11 +58,11 @@ app.get("/created-url", (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Node.js server running at http://localhost:${port}`);
+  console.log(`Node.js server running`);
 });
 
 function createUrlWithDocumentData(docData) {
-  const baseUrl = "http://localhost:3001/created-url";
+  const baseUrl = `${serverURL}/created-url`;
   // Encode and serialize the document data
   const encodedData = encodeURIComponent(JSON.stringify(docData));
   return `${baseUrl}?docData=${encodedData}`;
