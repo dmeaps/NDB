@@ -38,7 +38,7 @@ function render404(
 }
 
 function renderDocument(response, document) {
-  const deviceType = document.device_type === "solar" ? true : false;
+  const deviceType = document.device_type === "solar" ? True : False;
 
   return response.send(`
     <!DOCTYPE html>
@@ -82,7 +82,7 @@ function renderDocument(response, document) {
       </head>
       <body>
         <div class="container">
-          <h1>Document Data:</h1>
+          <h1>Tracking Details:</h1>
           <div class="field">
             <label>DEVID</label>
             <span>${document.device_id || "N/A"}</span>
@@ -93,7 +93,7 @@ function renderDocument(response, document) {
           </div>
           <div class="field">
             <label>DEVMD</label>
-            <span>${document.device_model_no || "N/A"}</span>
+            <span>${document.device_model_number || "N/A"}</span>
           </div>
           <div class="field">
             <label>DIMEI</label>
