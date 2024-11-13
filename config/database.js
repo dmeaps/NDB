@@ -8,6 +8,7 @@ export default function connect() {
     return mongoose.connection.asPromise();
   } else {
     const url = process.env.MONGO_URL;
+
     if (!url) {
       console.log("Missing Connection String for MongoDB");
       throw new Error("Connection String not found");

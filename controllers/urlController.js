@@ -38,6 +38,8 @@ function render404(
 }
 
 function renderDocument(response, document) {
+  const deviceType = document.device_type === "solar" ? true : false;
+
   return response.send(`
     <!DOCTYPE html>
     <html>
@@ -81,18 +83,34 @@ function renderDocument(response, document) {
       <body>
         <div class="container">
           <h1>Document Data:</h1>
-          ${Object.entries(document)
-            .map(
-              ([key, value]) => `
-            <div class="field">
-              <label>${key
-                .replace(/_/g, " ")
-                .replace(/\b\w/g, (l) => l.toUpperCase())}:</label>
-              <span>${value || "N/A"}</span>
-            </div>
-          `
-            )
-            .join("")}
+          <div class="field">
+            <label>DEVID</label>
+            <span>${document.device_id || "N/A"}</span>
+          </div>
+          <div class="field">
+            <label>VNDCD</label>
+            <span>${document.vendor_code || "N/A"}</span>
+          </div>
+          <div class="field">
+            <label>DEVMD</label>
+            <span>${document.device_model_no || "N/A"}</span>
+          </div>
+          <div class="field">
+            <label>DIMEI</label>
+            <span>${document.sim_imei || "N/A"}</span>
+          </div>
+          <div class="field">
+            <label>SFLAG</label>
+            <span>${deviceType}</span>
+          </div>
+          <div class="field">
+            <label>BATTY</label>
+            <span>${document.battery_type || "N/A"}</span>
+          </div>
+          <div class="field">
+            <label>BATCP</label>
+            <span>${document.battery_capacity || "N/A"}</span>
+          </div>
         </div>
       </body>
     </html>
@@ -101,6 +119,7 @@ function renderDocument(response, document) {
 
 // Function to handle URL entry updates
 const SERVER_URL = process.env.SERVER_URL;
+
 export async function handleURLEntry(request, response) {
   const { body } = request;
   console.log("Got this inside the url-entry body ", body);
