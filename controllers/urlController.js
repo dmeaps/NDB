@@ -40,6 +40,8 @@ function render404(
 function renderDocument(response, document) {
   const deviceType = document.device_type === "solar" ? "True" : "False";
 
+  const unavailable = (field, label) => field || `Unavailable ${label}`;
+
   return response.send(`
     <!DOCTYPE html>
     <html>
@@ -48,68 +50,98 @@ function renderDocument(response, document) {
         <style>
           body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
             padding: 20px;
             background-color: #f4f4f4;
             color: #333;
-          }
-          h1 {
-            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
           }
           .container {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            width: 100%;
+            box-sizing: border-box;
+          }
+          h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .fields {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
           }
           .field {
-            margin-bottom: 15px;
+            flex: 1 1 45%;
+            min-width: 180px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            box-sizing: border-box;
           }
           .field label {
             font-weight: bold;
             color: #34495e;
+            margin-bottom: 5px;
+            display: block;
           }
           .field span {
             display: block;
-            padding: 5px 0;
-            background-color: #ecf0f1;
-            border-radius: 4px;
-            margin-top: 5px;
+            color: #555;
+            font-size: 14px;
+          }
+          @media (max-width: 600px) {
+            .field {
+              flex: 1 1 100%;
+            }
           }
         </style>
       </head>
       <body>
         <div class="container">
-          <h1>Tracking Details:</h1>
-          <div class="field">
-            <label>DEVID</label>
-            <span>${document.device_id || "N/A"}</span>
-          </div>
-          <div class="field">
-            <label>VNDCD</label>
-            <span>${document.vendor_code || "N/A"}</span>
-          </div>
-          <div class="field">
-            <label>DEVMD</label>
-            <span>${document.device_model_number || "N/A"}</span>
-          </div>
-          <div class="field">
-            <label>DIMEI</label>
-            <span>${document.sim_imei || "N/A"}</span>
-          </div>
-          <div class="field">
-            <label>SFLAG</label>
-            <span>${deviceType}</span>
-          </div>
-          <div class="field">
-            <label>BATTY</label>
-            <span>${document.battery_type || "N/A"}</span>
-          </div>
-          <div class="field">
-            <label>BATCP</label>
-            <span>${document.battery_capacity || "N/A"}</span>
+          <h1>Tracking Details</h1>
+          <div class="fields">
+            <div class="field">
+              <label>DEVID</label>
+              <span>${unavailable(document.device_id, "Device ID")}</span>
+            </div>
+            <div class="field">
+              <label>VNDCD</label>
+              <span>${unavailable(document.vendor_code, "Vendor Code")}</span>
+            </div>
+            <div class="field">
+              <label>DEVMD</label>
+              <span>${unavailable(
+                document.device_model_number,
+                "Device Model Number"
+              )}</span>
+            </div>
+            <div class="field">
+              <label>DIMEI</label>
+              <span>${unavailable(document.sim_imei, "SIM IMEI")}</span>
+            </div>
+            <div class="field">
+              <label>SFLAG</label>
+              <span>${deviceType}</span>
+            </div>
+            <div class="field">
+              <label>BATTY</label>
+              <span>${unavailable(document.battery_type, "Battery Type")}</span>
+            </div>
+            <div class="field">
+              <label>BATCP</label>
+              <span>${unavailable(
+                document.battery_capacity,
+                "Battery Capacity"
+              )}</span>
+            </div>
           </div>
         </div>
       </body>
@@ -119,11 +151,10 @@ function renderDocument(response, document) {
 
 // Function to handle URL entry updates
 
-const SERVER_URL = process.env.SERVER_URL;
+const SERVER_URL = "http://localhost:3009";
 
 export async function handleURLEntry(request, response) {
   const { body } = request;
-  console.log("Got this inside the url-entry body ", body);
 
   if (!body.name) {
     console.log("DOCUMENT NAME NOT FOUND, ABORTING");
