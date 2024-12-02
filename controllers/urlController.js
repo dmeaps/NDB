@@ -151,7 +151,7 @@ function renderDocument(response, document) {
 
 // Function to handle URL entry updates
 
-const SERVER_URL = "http://localhost:3009";
+const SERVER_URL = process.env.SERVER_URL;
 
 export async function handleURLEntry(request, response) {
   const { body } = request;
