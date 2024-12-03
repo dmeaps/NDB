@@ -152,6 +152,7 @@ function renderDocument(response, document) {
 // Function to handle URL entry updates
 
 const SERVER_URL = process.env.SERVER_URL;
+console.log("Environment ", process.env);
 
 export async function handleURLEntry(request, response) {
   const { body } = request;
