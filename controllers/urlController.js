@@ -106,7 +106,7 @@ function renderDocument(response, document) {
       </head>
       <body>
         <div class="container">
-          <h1>Tracking Details</h1>
+          <h1>Wagon Tracker</h1>
           <div class="fields">
             <div class="field">
               <label>DEVID</label>
@@ -151,10 +151,7 @@ function renderDocument(response, document) {
 
 // Function to handle URL entry updates
 
-let SERVER_URL = "http://localhost:3009";
-if (process.env.NODE_ENV === "production") {
-  SERVER_URL = process.env.SERVER_URL;
-}
+const SERVER_URL = process.env.SERVER_URL;
 
 export async function handleURLEntry(request, response) {
   const { body } = request;
