@@ -2,7 +2,7 @@ import { model, Schema, modelNames } from "mongoose";
 
 const wagonTrackerSchema = new Schema(
   {
-    docname: { type: String, required: true },
+    dn: { type: String, required: true },
     service_provider_name: { type: String },
     device_id: { type: String },
     vendor_code: { type: String },

@@ -166,7 +166,7 @@ export async function handleURLEntry(request, response) {
 
   try {
     const existingEntry = await wagonTrackerModel.findOneAndUpdate(
-      { docname: body.name },
+      { dn: body.name },
       { $set: body },
       { new: true, upsert: true }
     );
@@ -177,8 +177,8 @@ export async function handleURLEntry(request, response) {
         : "Created new Wagon Tracker Entry"
     );
 
-    const docname = body.name;
-    const url = `${SERVER_URL}/cu?docname=${docname}`;
+    const dn = body.name;
+    const url = `${SERVER_URL}/cu?dn=${dn}`;
 
     return response.json({
       message: "Server POST Request was hit",
@@ -196,14 +196,14 @@ export async function handleURLEntry(request, response) {
 
 // Function to handle document fetching and rendering
 export async function handleCreatedURL(request, response) {
-  const { docname } = request.query;
+  const { dn } = request.query;
 
-  if (!docname) {
+  if (!dn) {
     return render404(response, "Document name is missing.");
   }
 
   try {
-    const document = await wagonTrackerModel.findOne({ docname });
+    const document = await wagonTrackerModel.findOne({ dn });
 
     if (!document) {
       return render404(response);
