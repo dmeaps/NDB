@@ -178,7 +178,7 @@ export async function handleURLEntry(request, response) {
     );
 
     const docname = body.name;
-    const url = `${SERVER_URL}/created-url?docname=${docname}`;
+    const url = `${SERVER_URL}/cu?docname=${docname}`;
 
     return response.json({
       message: "Server POST Request was hit",
