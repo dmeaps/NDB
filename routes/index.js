@@ -9,7 +9,7 @@ router.get("/", (_, response) => {
   response.send("Hello from NodeJS server withing ERPNEXT with CORS enabled");
 });
 
-router.post("/ue", handleURLEntry);
+router.post("/url-entry", handleURLEntry);
 router.get("/cu", handleCreatedURL);
 
 export default router;
