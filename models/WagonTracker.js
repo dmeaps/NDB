@@ -1,6 +1,6 @@
 import mongoose, { model, Schema, modelNames } from "mongoose";
 
-const wagonTrackerSchema = new Schema(
+const newWagonTrackerSchema = new Schema(
   {
     dn: { type: String, required: true },
     service_provider_name: { type: String },
@@ -34,13 +34,13 @@ const oldWagonTrackerSchema = new Schema(
   }
 );
 
-const newModelName = "Wagon_Tracker";
-const oldModelName = "Wagon_Tracker";
+const newModelName = "New_Wagon_Tracker";
+const oldModelName = "Old_Wagon_Tracker";
 const existingModels = modelNames();
 
-export const wagonTrackerModel = existingModels.includes(newModelName)
+export const newWagonTrackerModel = existingModels.includes(newModelName)
   ? mongoose.model(newModelName)
-  : model(newModelName, wagonTrackerSchema);
+  : model(newModelName, newWagonTrackerSchema);
 
 export const oldWagonTrackerModel = existingModels.includes(oldModelName)
   ? mongoose.model(oldModelName)

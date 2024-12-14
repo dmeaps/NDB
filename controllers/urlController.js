@@ -1,5 +1,5 @@
 import {
-  wagonTrackerModel,
+  newWagonTrackerModel,
   oldWagonTrackerModel,
 } from "../models/WagonTracker.js";
 import dotenv from "dotenv";
@@ -160,7 +160,7 @@ function getModelByServerURL(serverURL) {
     return oldWagonTrackerModel;
   } else if (serverURL == newBackend) {
     console.log("Must access New Wagon Tracker Schema");
-    return wagonTrackerModel;
+    return newWagonTrackerModel;
   } else {
     throw new Error("Invalid server URL");
   }
