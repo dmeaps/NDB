@@ -9,6 +9,7 @@ dotenv.config();
 const SERVER_URL = process.env.SERVER_URL;
 export const newBackend = "https://ndb-1.onrender.com";
 export const oldBackend = "https://nodejs-backend-m9dh.onrender.com";
+
 function render404(
   response,
   message = "The document you are looking for does not exist."
@@ -218,7 +219,7 @@ export async function handleCreatedURL(request, response) {
     const queryField = SERVER_URL === newBackend ? { dn } : { docname };
     console.log("Query Field", queryField);
     console.log("For server url", process.env.MONGO_URL);
-
+    console.log("Model to be searched in", model);
     const document = await model.findOne(queryField);
     if (!document) {
       return render404(response);
