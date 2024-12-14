@@ -47,7 +47,7 @@ function render404(
 
 function renderDocument(response, document) {
   console.log("Rendering document:", document);
-  const deviceType = document.device_type === "solar" ? "True" : "False";
+  const deviceType = document.device_type === "Solar" ? "True" : "False";
   const unavailable = (field, label) => field || `Unavailable ${label}`;
   return response.send(`
     <!DOCTYPE html>
