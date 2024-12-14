@@ -2,8 +2,8 @@ import Router from "express";
 import {
   handleURLEntry,
   handleCreatedURL,
-  A,
-  B,
+  oldBackend,
+  newBackend,
 } from "../controllers/urlController.js";
 import { config } from "dotenv";
 config();
@@ -15,10 +15,10 @@ router.get("/", (_, response) => {
 });
 
 router.post("/url-entry", handleURLEntry);
-if (SERVER_URL == A) {
+if (SERVER_URL == oldBackend) {
   console.log("Required entry with created-url");
   router.get("/created-url", handleCreatedURL);
-} else if (SERVER_URL == B) {
+} else if (SERVER_URL == newBackend) {
   console.log("Required entry with cu");
   router.get("/cu", handleCreatedURL);
 }

@@ -7,8 +7,8 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const SERVER_URL = process.env.SERVER_URL;
-export const A = "https://ndb-1.onrender.com";
-export const B = "https://nodejs-backend-m9dh.onrender.com";
+export const newBackend = "https://ndb-1.onrender.com";
+export const oldBackend = "https://nodejs-backend-m9dh.onrender.com";
 function render404(
   response,
   message = "The document you are looking for does not exist."
@@ -45,9 +45,7 @@ function render404(
 
 function renderDocument(response, document) {
   const deviceType = document.device_type === "solar" ? "True" : "False";
-
   const unavailable = (field, label) => field || `Unavailable ${label}`;
-
   return response.send(`
     <!DOCTYPE html>
     <html>
@@ -156,12 +154,12 @@ function renderDocument(response, document) {
 }
 
 function getModelByServerURL(serverURL) {
-  if (serverURL == A) {
-    console.log("Must access New Wagon Tracker Schema");
-    return wagonTrackerModel;
-  } else if (serverURL == B) {
+  if (serverURL == oldBackend) {
     console.log("Must access Old Wagon Tracker Schema");
     return oldWagonTrackerModel;
+  } else if (serverURL == newBackend) {
+    console.log("Must access New Wagon Tracker Schema");
+    return wagonTrackerModel;
   } else {
     throw new Error("Invalid server URL");
   }
@@ -180,7 +178,7 @@ export async function handleURLEntry(request, response) {
   try {
     const model = getModelByServerURL(SERVER_URL);
     const queryField =
-      SERVER_URL === A ? { dn: body.name } : { docname: body.name };
+      SERVER_URL === newBackend ? { dn: body.name } : { docname: body.name };
     const existingEntry = await model.findOneAndUpdate(
       queryField,
       { $set: body },
@@ -192,8 +190,8 @@ export async function handleURLEntry(request, response) {
         : "Created new Wagon Tracker Entry"
     );
 
-    const identifier = SERVER_URL == A ? "dn" : "docname";
-    const urlPath = SERVER_URL == A ? "cu" : "created-url";
+    const identifier = SERVER_URL == newBackend ? "dn" : "docname";
+    const urlPath = SERVER_URL == newBackend ? "cu" : "created-url";
     const url = `${SERVER_URL}/${urlPath}?${identifier}=${body.name}`;
     console.log("URL Path returning ", url);
     return response.json({
@@ -217,7 +215,7 @@ export async function handleCreatedURL(request, response) {
   }
   try {
     const model = getModelByServerURL(SERVER_URL);
-    const queryField = SERVER_URL === A ? { dn } : { docname };
+    const queryField = SERVER_URL === newBackend ? { dn } : { docname };
     console.log("Query Field", queryField);
     const document = await model.findOne(queryField);
     if (!document) {
