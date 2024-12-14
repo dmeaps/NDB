@@ -14,6 +14,7 @@ function render404(
   response,
   message = "The document you are looking for does not exist."
 ) {
+  console.log("Rendering 404 with message:", message);
   return response.status(404).send(`
     <!DOCTYPE html>
     <html>
@@ -45,6 +46,7 @@ function render404(
 }
 
 function renderDocument(response, document) {
+  console.log("Rendering document:", document);
   const deviceType = document.device_type === "solar" ? "True" : "False";
   const unavailable = (field, label) => field || `Unavailable ${label}`;
   return response.send(`
@@ -155,21 +157,24 @@ function renderDocument(response, document) {
 }
 
 function getModelByServerURL(serverURL) {
+  console.log("Determining model for server URL:", serverURL);
   if (serverURL == oldBackend) {
-    console.log("Must access Old Wagon Tracker Schema");
+    console.log("Using old wagon tracker schema");
     return oldWagonTrackerModel;
   } else if (serverURL == newBackend) {
-    console.log("Must access New Wagon Tracker Schema");
+    console.log("Using new wagon tracker schema");
     return newWagonTrackerModel;
   } else {
+    console.error("Invalid server URL provided:", serverURL);
     throw new Error("Invalid server URL");
   }
 }
 
 export async function handleURLEntry(request, response) {
+  console.log("Handling URL entry with request body:", request.body);
   const { body } = request;
   if (!body.name) {
-    console.log("DOCUMENT NAME NOT FOUND, ABORTING");
+    console.log("Document name not found in request body");
     return response.status(403).json({
       message: "Document name absent",
       status: 403,
@@ -178,8 +183,11 @@ export async function handleURLEntry(request, response) {
 
   try {
     const model = getModelByServerURL(SERVER_URL);
+    console.log("Resolved model:", model);
     const queryField =
       SERVER_URL === newBackend ? { dn: body.name } : { docname: body.name };
+    console.log("Query field for findOneAndUpdate:", queryField);
+
     const existingEntry = await model.findOneAndUpdate(
       queryField,
       { $set: body },
@@ -187,21 +195,22 @@ export async function handleURLEntry(request, response) {
     );
     console.log(
       existingEntry
-        ? "Updated existing Wagon Tracker Entry"
-        : "Created new Wagon Tracker Entry"
+        ? "Updated existing wagon tracker entry"
+        : "Created new wagon tracker entry"
     );
 
     const identifier = SERVER_URL == newBackend ? "dn" : "docname";
     const urlPath = SERVER_URL == newBackend ? "cu" : "created-url";
     const url = `${SERVER_URL}/${urlPath}?${identifier}=${body.name}`;
-    console.log("URL Path returning ", url);
+    console.log("Generated URL path:", url);
+
     return response.json({
-      message: "Server POST Request was hit",
+      message: "Server POST request was hit",
       status: 200,
       url: url,
     });
   } catch (error) {
-    console.error("Error handling URL entry", error);
+    console.error("Error handling URL entry:", error);
     return response.status(500).json({
       message: "Error processing request",
       status: 500,
@@ -210,23 +219,29 @@ export async function handleURLEntry(request, response) {
 }
 
 export async function handleCreatedURL(request, response) {
+  console.log("Handling created URL with query:", request.query);
   const { dn, docname } = request.query;
   if (!dn && !docname) {
+    console.log("Document identifier is missing in query");
     return render404(response, "Document identifier is missing.");
   }
+
   try {
     const model = getModelByServerURL(SERVER_URL);
+    console.log("Resolved model:", model);
     const queryField = SERVER_URL === newBackend ? { dn } : { docname };
-    console.log("Query Field", queryField);
-    console.log("For server url", process.env.MONGO_URL);
-    console.log("Model to be searched in", model);
+    console.log("Query field for fetching document:", queryField);
+
     const document = await model.findOne(queryField);
     if (!document) {
+      console.log("No document found for query field:", queryField);
       return render404(response);
     }
+
+    console.log("Document found:", document);
     return renderDocument(response, document.toObject());
   } catch (error) {
-    console.error("Error fetching document", error);
+    console.error("Error fetching document:", error);
     return response.status(500).json({
       message: "Error fetching document",
       status: 500,
