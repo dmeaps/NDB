@@ -35,7 +35,7 @@ const oldWagonTrackerSchema = new Schema(
 );
 
 const newModelName = "New_Wagon_Tracker";
-const oldModelName = "Old_Wagon_Tracker";
+const oldModelName = "Wagon_Tracker";
 const existingModels = modelNames();
 
 export const newWagonTrackerModel = existingModels.includes(newModelName)
