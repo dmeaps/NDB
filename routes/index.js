@@ -16,8 +16,10 @@ router.get("/", (_, response) => {
 
 router.post("/url-entry", handleURLEntry);
 if (SERVER_URL == A) {
+  console.log("Required entry with created-url");
   router.get("/created-url", handleCreatedURL);
 } else if (SERVER_URL == B) {
+  console.log("Required entry with cu");
   router.get("/cu", handleCreatedURL);
 }
 

@@ -157,8 +157,10 @@ function renderDocument(response, document) {
 
 function getModelByServerURL(serverURL) {
   if (serverURL == A) {
+    console.log("Must access New Wagon Tracker Schema");
     return wagonTrackerModel;
   } else if (serverURL == B) {
+    console.log("Must access Old Wagon Tracker Schema");
     return oldWagonTrackerModel;
   } else {
     throw new Error("Invalid server URL");
@@ -193,6 +195,7 @@ export async function handleURLEntry(request, response) {
     const identifier = SERVER_URL == A ? "dn" : "docname";
     const urlPath = SERVER_URL == A ? "cu" : "created-url";
     const url = `${SERVER_URL}/${urlPath}?${identifier}=${body.name}`;
+    console.log("URL Path returning ", url);
     return response.json({
       message: "Server POST Request was hit",
       status: 200,
@@ -215,6 +218,7 @@ export async function handleCreatedURL(request, response) {
   try {
     const model = getModelByServerURL(SERVER_URL);
     const queryField = SERVER_URL === A ? { dn } : { docname };
+    console.log("Query Field", queryField);
     const document = await model.findOne(queryField);
     if (!document) {
       return render404(response);
