@@ -8,7 +8,7 @@ dotenv.config();
 
 const SERVER_URL = process.env.SERVER_URL;
 export const A = "https://ndb-1.onrender.com";
-export const B = "https://nodejs-backend-2ivb.onrender.com";
+export const B = "https://nodejs-backend-m9dh.onrender.com";
 function render404(
   response,
   message = "The document you are looking for does not exist."
