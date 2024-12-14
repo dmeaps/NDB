@@ -217,6 +217,8 @@ export async function handleCreatedURL(request, response) {
     const model = getModelByServerURL(SERVER_URL);
     const queryField = SERVER_URL === newBackend ? { dn } : { docname };
     console.log("Query Field", queryField);
+    console.log("For server url", process.env.MONGO_URL);
+
     const document = await model.findOne(queryField);
     if (!document) {
       return render404(response);
