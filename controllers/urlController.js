@@ -1,8 +1,14 @@
-import { wagonTrackerModel } from "../models/WagonTracker.js";
+import {
+  wagonTrackerModel,
+  oldWagonTrackerModel,
+} from "../models/WagonTracker.js";
 import dotenv from "dotenv";
 
 dotenv.config();
 
+const SERVER_URL = process.env.SERVER_URL;
+export const A = "https://ndb-1.onrender.com";
+export const B = "https://nodejs-backend-2ivb.onrender.com";
 function render404(
   response,
   message = "The document you are looking for does not exist."
@@ -149,13 +155,18 @@ function renderDocument(response, document) {
   `);
 }
 
-// Function to handle URL entry updates
-
-const SERVER_URL = process.env.SERVER_URL;
+function getModelByServerURL(serverURL) {
+  if (serverURL == A) {
+    return wagonTrackerModel;
+  } else if (serverURL == B) {
+    return oldWagonTrackerModel;
+  } else {
+    throw new Error("Invalid server URL");
+  }
+}
 
 export async function handleURLEntry(request, response) {
   const { body } = request;
-
   if (!body.name) {
     console.log("DOCUMENT NAME NOT FOUND, ABORTING");
     return response.status(403).json({
@@ -165,21 +176,23 @@ export async function handleURLEntry(request, response) {
   }
 
   try {
-    const existingEntry = await wagonTrackerModel.findOneAndUpdate(
-      { dn: body.name },
+    const model = getModelByServerURL(SERVER_URL);
+    const queryField =
+      SERVER_URL === A ? { dn: body.name } : { docname: body.name };
+    const existingEntry = await model.findOneAndUpdate(
+      queryField,
       { $set: body },
       { new: true, upsert: true }
     );
-
     console.log(
       existingEntry
         ? "Updated existing Wagon Tracker Entry"
         : "Created new Wagon Tracker Entry"
     );
 
-    const dn = body.name;
-    const url = `${SERVER_URL}/cu?dn=${dn}`;
-
+    const identifier = SERVER_URL == A ? "dn" : "docname";
+    const urlPath = SERVER_URL == A ? "cu" : "created-url";
+    const url = `${SERVER_URL}/${urlPath}?${identifier}=${body.name}`;
     return response.json({
       message: "Server POST Request was hit",
       status: 200,
@@ -194,21 +207,18 @@ export async function handleURLEntry(request, response) {
   }
 }
 
-// Function to handle document fetching and rendering
 export async function handleCreatedURL(request, response) {
-  const { dn } = request.query;
-
-  if (!dn) {
-    return render404(response, "Document name is missing.");
+  const { dn, docname } = request.query;
+  if (!dn && !docname) {
+    return render404(response, "Document identifier is missing.");
   }
-
   try {
-    const document = await wagonTrackerModel.findOne({ dn });
-
+    const model = getModelByServerURL(SERVER_URL);
+    const queryField = SERVER_URL === A ? { dn } : { docname };
+    const document = await model.findOne(queryField);
     if (!document) {
       return render404(response);
     }
-
     return renderDocument(response, document.toObject());
   } catch (error) {
     console.error("Error fetching document", error);
