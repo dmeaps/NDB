@@ -113,7 +113,6 @@ function renderDocument(response, document) {
       </head>
       <body>
         <div class="container">
-          <h1>Wagon Tracker</h1>
           <div class="fields">
             <div class="field">
               <label>DEVID</label>
